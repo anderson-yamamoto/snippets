@@ -1,6 +1,7 @@
 package com.atto.challenges.prime;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PrimeNumbers
 {
@@ -8,11 +9,15 @@ public class PrimeNumbers
     //What is the 10 001st prime number?
     public static void main(String[] args)
     {
-        ArrayList<Long> list = new ArrayList<Long>(10002);
+        System.out.println(getPrimes(10001).get(10001 -1));
+    }
+    
+    public static List<Long> getPrimes(int size){
+        ArrayList<Long> list = new ArrayList<Long>(size);
         list.add(2L);
         list.add(3L);
         long currentNumber = 5;
-        outer: while (list.size() != 10001){
+        outer: while (list.size() != size){
             for (int i = 0; i < list.size(); i++){
                 Long prime = list.get(i);
                 if ( currentNumber%prime == 0){
@@ -24,9 +29,8 @@ public class PrimeNumbers
                     break;
             }
             list.add(currentNumber);
-            System.out.println(currentNumber);
             currentNumber += 2;
         }
-        
+        return list;
     }
 }
