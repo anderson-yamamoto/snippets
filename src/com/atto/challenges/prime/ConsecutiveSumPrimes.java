@@ -3,6 +3,7 @@ package com.atto.challenges.prime;
 import java.util.List;
 
 /**
+https://projecteuler.net/problem=50
 
 The prime 41, can be written as the sum of six consecutive primes:
 
@@ -17,48 +18,38 @@ public class ConsecutiveSumPrimes
 {
     public static void main(String[] args)
     {
-        int largestPrimeIndex = 0;
-        List<Long> list = PrimeNumbers.getPrimes(78500);
-        for (int i = list.size() - 1; i >= 0; i--)
-        {
-            if (list.get(i) < 1000000)
-            {
-                System.out.println("Last Prime before 1000000: " + i);
-                largestPrimeIndex = i;
-                break;
-            }
-
-        }
-
+        
+        List<Long> list = PrimeNumbers.getPrimesUpTo(1000000);
+        int largestPrimeIndex = list.size() - 1;
         int comboRecord = 0, winnerIndex = 0, comboCounter = 0;
         
         while (largestPrimeIndex > 0)
         {
             long sum = 0;
-            for (int i = 0; i < list.size(); i++)
+            numberLoop: for (int i = 0; i < list.size(); i++)
             {   
+                int removedPrimes = 0;
                 sum += list.get(i);
+                comboCounter++;
                 if (sum > list.get(largestPrimeIndex))
                 {
-                    if (comboCounter > comboRecord) //meaning a chance of breaking the record
+                    
+                    while (sum > list.get(largestPrimeIndex)) //removing shorter numbers
                     {
-                        int j = 0;
-                        while (sum > list.get(largestPrimeIndex)) //removing shorter numbers
+                        sum -= list.get(removedPrimes);            
+                        comboCounter--;  
+                        
+                        if (comboCounter == 0)
                         {
-                            sum -= list.get(j);            
-                            comboCounter--;    
-                            j++;
+                            largestPrimeIndex--;
+                            break numberLoop;
                         }
+                        removedPrimes++;
                     }
-                    else
-                    {
-                        largestPrimeIndex--;
-                        comboCounter = 0;
-                        break;
-                    }
+                    
                 }
-                else if (sum == list.get(largestPrimeIndex)){
-                    System.out.println("We're the champions!!!" + list.get(largestPrimeIndex) + " : COMBO " + comboCounter);
+                if (sum == list.get(largestPrimeIndex)){
+                    System.out.println("Prime:" + list.get(largestPrimeIndex) + " : COMBO " + comboCounter);
                     if (comboRecord < comboCounter){
                         comboRecord = comboCounter;
                         winnerIndex = largestPrimeIndex;
@@ -67,8 +58,6 @@ public class ConsecutiveSumPrimes
                     largestPrimeIndex--;
                     break;
                 }
-                comboCounter++;
-
             }
         }
         System.out.println("Record:" + comboRecord + ": " + list.get(winnerIndex));
