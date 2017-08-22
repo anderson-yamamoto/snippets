@@ -1,18 +1,21 @@
 package com.atto.challenges.divisor;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import com.atto.challenges.prime.PrimeNumbers;
 
+// https://projecteuler.net/problem=179
 // Find the number of integers 1 < n < 10^7, for which n and n + 1 have the 
 // same number of positive divisors. 
 // For example, 14 has the positive divisors 1, 2, 7, 14 while 15 has 1, 3, 5, 15.
 public class ConsecutiveMatchingDivisors
 {
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException
     {
-        List<Long> primeNumbers = PrimeNumbers.getPrimes(40000);
-        
+        List<Long> primeNumbers = PrimeNumbers.getPrimesUpTo(1000000);
+        int precisely2PrimeFactors = 0;
         int previousNumberDivisors = 2;
         int totalNumbers = 0;
         for (int i = 3; i < 1000001; i++)
@@ -26,26 +29,11 @@ public class ConsecutiveMatchingDivisors
             previousNumberDivisors = currentNumberDivisors;
         }
         System.out.println(totalNumbers);
+        FileOutputStream f = new FileOutputStream("result.txt");
+        f.write(String.valueOf(totalNumbers).getBytes());
+        f.flush();
+        f.close();
     }
-    
-    public static int numberOfDivisors(int number){
-        int numberDivisors = 2;
-        boolean even = number%2 == 0;
-        if (even){
-            numberDivisors += 2;
-            for (int i = 3; i <= number/3; i++){
-                if (number%i == 0)
-                    numberDivisors++;
-            }
-        }else{
-            for (int i = 3; i <= number/3; i+= 2){
-                if (number%i == 0)
-                    numberDivisors++;
-            }
-        }
-        
-        return numberDivisors;
-    }//need to decompose into prime multipliers and calculate combinations instead, should be faster
     
     /*
      * to calculate: n = a^x * b^y * c^z

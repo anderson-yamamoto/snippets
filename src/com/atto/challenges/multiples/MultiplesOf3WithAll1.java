@@ -14,11 +14,11 @@ public class MultiplesOf3WithAll1
         HashMap<Integer, Integer> map = multiplier();
         HashMap<Integer, Integer> previousRests = new HashMap<Integer, Integer>();
         StringBuilder builder = new StringBuilder();
-        int number = 23; 
+        int number = 113; 
         int limiter = 0;
         int previousRest = 0;
         int nextMultiplier = 7;
-        while ( ++limiter< 100){
+        while ( ++limiter< 200){
             builder.append(nextMultiplier);
             int total = number * nextMultiplier + previousRest;
             System.out.println(total);
