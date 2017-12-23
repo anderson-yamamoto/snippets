@@ -12,8 +12,6 @@ import java.util.List;
  */
 public class Weight
 {
-    private static final int MARKED_FOR_DELIVERY = 1;
-
     public static void main(String[] args)
     {
         minimumNumberOfTrips(100, new int[]{5,10, 20, 30, 40, 50,55,65,75,77,81,88,90,97});
@@ -22,8 +20,8 @@ public class Weight
 
     static int minimumNumberOfTrips(int tripMaxWeight, int[] packagesWeight)
     {
+    	//(listOfWeights.size() + 2 -1)/2; //rounding division up
         int trips = 0;
-        int[] flagArray = new int[packagesWeight.length];
         List<Integer> listOfWeights = new ArrayList<Integer>();
         for (int i = 0; i < packagesWeight.length; i++)
         {
@@ -31,42 +29,26 @@ public class Weight
         }
         Collections.sort(listOfWeights);
         
-
-        for (int i = listOfWeights.size() - 1; i >= 0; i--)
+        int minWeight = 0, maxWeight = listOfWeights.size() - 1; 
+        for (maxWeight = listOfWeights.size() - 1; maxWeight >= 0; maxWeight--)
         {
-            if (flagArray[i] == MARKED_FOR_DELIVERY) continue;
-            
-            
-            Integer index = findClosestWeightIndex(listOfWeights, tripMaxWeight - listOfWeights.get(i), flagArray);
-            System.out.println("For " + listOfWeights.get(i) + "-Found" + index + " " + flagArray[i]);
-            
-            
-            if (index > -1)
-            {
-                System.out.println("Found match: " + listOfWeights.get(index));
-                flagArray[index] = MARKED_FOR_DELIVERY;
-            }
-            flagArray[i] = MARKED_FOR_DELIVERY;
-            System.out.println(Arrays.toString(flagArray));
-            trips++;
-        }
-        System.out.println(Arrays.toString(flagArray));
-        System.out.println(trips);
-        
+        	if (minWeight == maxWeight) // finished, this package will be sent by itself
+        	{
+        		trips++; 
+        		System.out.println("Trip: [" + listOfWeights.get(maxWeight) + "]");
+        		break;
+        	}
+        		
+        	if (listOfWeights.get(maxWeight) + listOfWeights.get(minWeight) <= tripMaxWeight) {
+        		System.out.println("Trip: [" + listOfWeights.get(maxWeight) + ", " + listOfWeights.get(minWeight) + "]");
+        		minWeight ++;
+        	}
+        	else{
+        		System.out.println("Trip: [" + listOfWeights.get(maxWeight) + "]");	
+        	}
+        	trips++; // because this weight will need to be carried by itself, no other pair exists
+        }        	
+        System.out.println("Total trips: " + trips);
         return trips;
-    }
-
-    private static Integer findClosestWeightIndex(List<Integer> listOfWeights, int requiredWeight, int[] flagArray)
-    {
-        int i = 0;
-        int lastUnmarked = -1;
-        for (; i < listOfWeights.size(); i++)
-        {
-            if (requiredWeight < listOfWeights.get(i)) 
-                return lastUnmarked;
-            if (flagArray[i] != MARKED_FOR_DELIVERY )
-                lastUnmarked = i;
-        }
-        return lastUnmarked;
     }
 }

@@ -2,12 +2,13 @@ package com.atto.challenges;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 
 /*
  * A drone has an ID and a flight range. Return a list ordered by the highest flight range of N drones who are not in a maintenance list.
- * 
  */
 public class Drones
 {
@@ -19,66 +20,75 @@ public class Drones
         list.add(new Drone(1, 23));
         list.add(new Drone(1, 33));
         list.add(new Drone(1, 51));
+        list.add(new Drone(1, 21));
+        list.add(new Drone(1, 17));
+        list.add(new Drone(1, 83));
+        list.add(new Drone(1, 64));
         list.add(new Drone(1, 1));
+        list.add(new Drone(1, 15));
+        list.add(new Drone(1, 58));
+        list.add(new Drone(1, 61));
+        list.add(new Drone(1, 10));
+        list.add(new Drone(1, 41));
+        list.add(new Drone(1, 31));
         list.add(new Drone(1, 15));
         greatestFlightRangeDrones(1, list, maintenance);
     }
 
-    static List<Integer> greatestFlightRangeDrones(
+    static List<Drone> greatestFlightRangeDrones(
             Integer numberOfRequiredDrones, List<Drone> drones,
             List<Integer> inMaintenanceDrones)
     {
         
         HashMap<Integer, Integer> maintenance = new HashMap<Integer, Integer> ();
+        TreeSet<Drone> list = new TreeSet<Drone> (new Comparator<Drone>(){
+			@Override
+			public int compare(Drone o1, Drone o2) {
+				return Integer.compare(o1.flight, o2.flight);
+			}
+        	
+        });
         for (Integer i : inMaintenanceDrones)
             maintenance.put(i,i);
         
-        Drone[] array = new Drone[drones.size()];
-        int lastPosition = 0;
-        for (int i = 0; i < array.length; i++)
+        for (int i = 0; i < drones.size(); i++)
         {
             if (maintenance.get(drones.get(i).flight) != null)
                 continue;
-            if (lastPosition != 0)
-            {
-                int search = binarySearch(array, lastPosition,
-                        drones.get(i).flight);
-                if (search == -1 || search == lastPosition)
-                    array[lastPosition++] = drones.get(i);
-                else
-                {
-                    System.arraycopy(array, search, array, search + 1,
-                            lastPosition - search);
-                    array[search] = drones.get(i);
-                    lastPosition++;
-                }
-            }
-            else
-            {
-                array[lastPosition++] = drones.get(i);
-            }
-            System.out.println(Arrays.toString(array));
+            list.add(drones.get(i));
+            System.out.println(Arrays.toString(list.toArray()));
         }
         
-        ArrayList<Integer> finalList = new ArrayList<Integer>();
-        for (int i = 0; i < numberOfRequiredDrones; i++){
-            finalList.add(array[i].id); 
-        }
-        return finalList;
+        return new ArrayList<Drone>(list);
     }
 
-    private static int binarySearch(Drone[] array, int size, int flight)
+    // Unused method for binary searching insert point  
+    @SuppressWarnings("unused")
+	private static int binarySearch(Drone[] array, int flight)
     {
-        int i = 0;
-        for (; i < size; i++)
+    	if (array[0].flight > flight)
+    		return 0;
+    	if (array[array.length - 1].flight < flight)
+    		return array.length ;
+        return binarySearch(array, flight, 0, array.length);
+    }
+    
+    //Unused method for binary searching insert point
+    private static int binarySearch(Drone[] array, int flight, int start, int end)
+    {
+        int pivot = start + (end - start) /2;
+        if (start == pivot)
         {
-            Drone search = array[i];
-            if (search.flight < flight)
-            {
-                return i;
-            }
+        	if (array[pivot].flight < flight)
+        		return pivot + 1;
+        	return pivot;
         }
-        return i;
+        	
+        if (array[pivot].flight == flight)
+        	return pivot;
+        if (array[pivot].flight > flight)
+        	return binarySearch(array, flight, start, pivot);
+    	return binarySearch(array, flight, pivot, end);
     }
 
 }
